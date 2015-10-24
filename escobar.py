@@ -4,7 +4,10 @@ from PIL import Image, ImageDraw, ImageFont
 
 @click.command()
 @click.argument('slug', required=True)
-def escobar(slug):
+@click.option('--gif', default=False, type=bool, help='Do you want to create gif frames? (True / False)')
+@click.option('--video', default=False, type=bool, help='Do you want to create a video? (True / False)')
+def escobar(slug, gif, video):
+    """Create share-ready images & gifs for your Devpost projects."""
     # DATA
     p = slug
     #p = 'infraudio-nuc8df'
@@ -38,7 +41,13 @@ def escobar(slug):
 
     # IMAGE
 
-    #  load base images
+    # load fonts & set sizes.
+    f1 = ImageFont.truetype("roboto/Roboto-Regular.ttf", 60)
+    f2 = ImageFont.truetype("roboto/Roboto-Regular.ttf", 30)
+    f3 = ImageFont.truetype("roboto/Roboto-Regular.ttf", 40)
+    c1 = "white"
+
+    #  MAIN FRAME
     img = Image.open("img/base2.jpg")
     banner = Image.open("img/banner.png")
     draw = ImageDraw.Draw(img)
@@ -47,12 +56,6 @@ def escobar(slug):
     # add banner if it's a winner
     if (wins > 0):
         img.paste(banner, (0, 0), banner.convert('RGBA'))
-
-    # load fonts & set sizes.
-    f1 = ImageFont.truetype("roboto/Roboto-Regular.ttf", 60)
-    f2 = ImageFont.truetype("roboto/Roboto-Regular.ttf", 30)
-    f3 = ImageFont.truetype("roboto/Roboto-Regular.ttf", 40)
-    c1 = "white"
 
     # calculate size of title & center it
     if ((f1.getsize(title)[0]) <= 7000):
@@ -89,8 +92,40 @@ def escobar(slug):
         draw.text((20, y_text), line, font=f2, fill=c1)
         y_text += tagh
 
-    # save to disk bro!
-    img.save(p+".png", "PNG")
+    # OH SNAP, IT'S THE GIF CONDITION!
+    if (gif is True or video is True):
+        print "Generating frames"
+        img.save(p+"1.gif", "GIF")
+
+        # LOGO FRAME
+        img = Image.open("img/base2.jpg")
+        draw = ImageDraw.Draw(img)
+        logo = Image.open("img/logo2.png")
+        heart = Image.open("img/heart2.png")
+        W, H = img.size
+
+        # add logo & heart
+        img.paste(logo, ((W-logo.size[0])/2, 20), logo.convert('RGBA'))
+        img.paste(heart, ((W-heart.size[0])/2, 20 + logo.size[1] ), heart.convert('RGBA'))
+
+        # calculate size of title & center it
+        if ((f1.getsize(title)[0]) <= 700):
+            ft = f1
+        else:
+            ft = f3
+
+        tw, th = draw.textsize(title, font=ft)
+        tx = (W-tw)/2
+        ty = 20 + logo.size[1] + 140
+        draw.text((tx, ty), title, fill=c1, font=ft)
+
+        img.save(p+"0.gif", "GIF")
+        # you still need to run `gifsicle --delay=200 --loop *.gif > anim.gif` once the python script finishes up.
+
+    else:
+        # if GIF is false, just save the original slide as a PNG
+        img.save(p+".png", "PNG")
+
     print "that's a wrap on " +title+ "!"
 
 if __name__ == '__main__':
