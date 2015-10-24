@@ -93,6 +93,5 @@ def escobar(slug):
     img.save(p+".png", "PNG")
     print "that's a wrap on " +title+ "!"
 
-##########################
 if __name__ == '__main__':
     escobar()

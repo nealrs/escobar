@@ -124,6 +124,5 @@ def escobar(slug):
     # DAS IT!
     print "that's a wrap on " +title+ "!"
 
-##########################
 if __name__ == '__main__':
     escobar()
