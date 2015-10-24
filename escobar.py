@@ -39,7 +39,7 @@ def escobar(slug):
     # IMAGE
 
     #  load base images
-    img = Image.open("img/base.png")
+    img = Image.open("img/base2.jpg")
     banner = Image.open("img/banner.png")
     draw = ImageDraw.Draw(img)
     W, H = img.size
@@ -49,26 +49,26 @@ def escobar(slug):
         img.paste(banner, (0, 0), banner.convert('RGBA'))
 
     # load fonts & set sizes.
-    f1 = ImageFont.truetype("roboto/Roboto-Regular.ttf", 30)
-    f2 = ImageFont.truetype("roboto/Roboto-Regular.ttf", 15)
-    f3 = ImageFont.truetype("roboto/Roboto-Regular.ttf", 20)
+    f1 = ImageFont.truetype("roboto/Roboto-Regular.ttf", 60)
+    f2 = ImageFont.truetype("roboto/Roboto-Regular.ttf", 30)
+    f3 = ImageFont.truetype("roboto/Roboto-Regular.ttf", 40)
     c1 = "white"
 
     # calculate size of title & center it
-    if ((f1.getsize(title)[0]) <= 350):
+    if ((f1.getsize(title)[0]) <= 7000):
         ft = f1
     else:
         ft = f3
 
     tw, th = draw.textsize(title, font=ft)
     tx = (W-tw)/2
-    ty = 10
+    ty = 20
     draw.text((tx, ty), title, fill=c1, font=ft)
 
     # calculate size of tagline & draw it
     # stackoverflow.com/questions/7698231/python-pil-draw-multiline-text-on-image
     taglineM = textwrap.wrap(tagline, width=55)
-    y_text = ty+ft.getsize(title)[1]+5
+    y_text = ty+ft.getsize(title)[1]+10
     for line in taglineM:
         tagw, tagh = f2.getsize(line)
         draw.text(((W - tagw) / 2, y_text), line, font=f2, fill=c1)
@@ -76,17 +76,17 @@ def escobar(slug):
 
     # calculate size of team & tags & draw them
     teamM = textwrap.wrap(team, width=55)
-    y_text = y_text + 10
+    y_text = y_text + 20
     for line in teamM:
         tagw, tagh = f2.getsize(line)
-        draw.text((10, y_text), line, font=f2, fill=c1)
+        draw.text((20, y_text), line, font=f2, fill=c1)
         y_text += tagh
 
     tagsM = textwrap.wrap(tags, width=55)
-    y_text = y_text + 10
+    y_text = y_text + 20
     for line in tagsM:
         tagw, tagh = f2.getsize(line)
-        draw.text((10, y_text), line, font=f2, fill=c1)
+        draw.text((20, y_text), line, font=f2, fill=c1)
         y_text += tagh
 
     # save to disk bro!
