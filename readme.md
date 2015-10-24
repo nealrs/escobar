@@ -1,7 +1,3 @@
-# Escobar
-
-Create share-ready images & gifs for your Devpost projects.
-
 ![](https://github.com/nealrs/escobar/blob/master/examples/distractedness.png?raw=true)
 
 ## Inspiration
@@ -9,15 +5,27 @@ Create share-ready images & gifs for your Devpost projects.
 1. I want hackers to be proud of their work on Devpost and share it.
 2. Twitter cards expand automatically on mobile, but not desktop.
 3. Twitter _images_ expand automatically on all platforms.
-4. Gifs are awesome.
-5. Twitter's now deprecated [product cards](https://dev.twitter.com/cards/types/product), which we used to list team & stack.
-6. Buffer's [Pablo](https://buffer.com/pablo) image generator for social sharing.
-7. A desire to learn how to build images programmatically.
-8. Some base work already done in node.
+4. Facebook prioritizes native video over youtube embeds + hates gifs
+5. Gifs are awesome.
+6. Twitter's now deprecated [product cards](https://dev.twitter.com/cards/types/product), which we used to list team & stack.
+7. Buffer's [Pablo](https://buffer.com/pablo) image generator for social sharing.
+8. A desire to learn how to build images programmatically.
 
-## What I built
+## What it is
 
 Escobar takes Devpost URL slugs and creates a pretty, Twitter-optimized, image with key project details: title, tagline, team, and tags. I hope it'll encourage people to share their projects more via social.
+
+Oh, and it can also generate videos, which will autoplay on Facebook, and gifs for Twitter.
+
+### How to use it:
+
+This will create a gif, and a mp4 vide clip of my Summer Jam landing page project, (`sj` is the url slug). For a static PNG, don't set the `--gif` or `-video` flags.
+
+```bash
+$  python escobar.py --gif=True --video=True sj
+```
+
+![](http://i.imgur.com/RVRPWd8.gif)
 
 ### A quick note: screw you node
 >
@@ -25,7 +33,7 @@ Escobar takes Devpost URL slugs and creates a pretty, Twitter-optimized, image w
 
 >![](http://i.imgur.com/WuPCom7.jpg)
 
-## Getting the Data
+## Getting the data
 
 I &#9829;`requests` &amp; Python. This is all it took to get the JSON data:
 
@@ -108,21 +116,34 @@ Finally, we can save to disk:
 img.save(p+".png", "PNG")
 ```
 
-## Getting Gif-y
+## Feeling animated
 
-![](https://github.com/nealrs/escobar/blob/master/examples/anim.gif?raw=true)
-
-After I got the basic script working, I thought to myself: what about creating an animated gif? Easy.
+After I got the basic script working, I thought to myself: what about creating an animated gifs and video? Easy.
 
 Well, It was easy to create an additional/title slide with the Devpost logo, heart, and project title. You can review that code yourself.
 
-It was not easy way to compile the animated gif within Python or via shell script though. I couldn't get subprocess to stop complaining about directories, and all the `Pillow` hacks I tried failed.
+It was not easy way to compile the animated gif within Python or via shell script though. I couldn't get subprocess to stop complaining about directories, and all the `Pillow` hacks I tried failed. Then I tried using `gifsicle`, which was great, but wasn't a complete solution (no video). So I switched to `moviepy` which uses `ffmpeg` and does it all!
 
-Instead, I'm manually using `gifsicle`. It's not ideal, but it works and it was was 3am when I wrote this.
+After generating my two animation frames `0.png` & `1.png`, it's just a matter of telling `moviepy` what to do:
 
-```bash
-gifsicle --delay=200 --loop *.gif > anim.gif
+```python
+# sequence images into a clip
+FPS = .75
+clip = ImageSequenceClip(["0.png", "1.png"], fps=FPS)
+
+# write output gif or video
+if (video is True):
+  clip.write_videofile(p+".mp4", fps=FPS)
+
+if (gif is True):
+  clip.write_gif(p+".gif",fps=FPS)
+
+# let's clean up after ourselves and remove our temporary files.
+os.remove("0.png")
+os.remove("1.png")
 ```
+
+Das it!!
 
 ## Next steps
 

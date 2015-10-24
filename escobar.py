@@ -1,13 +1,14 @@
 #!/usr/bin/python
-import json, requests, textwrap, unicodedata, click
+import json, requests, textwrap, unicodedata, click, os
 from PIL import Image, ImageDraw, ImageFont
+from moviepy.editor import *
 
 @click.command()
 @click.argument('slug', required=True)
 @click.option('--gif', default=False, type=bool, help='Do you want to create gif frames? (True / False)')
 @click.option('--video', default=False, type=bool, help='Do you want to create a video? (True / False)')
 def escobar(slug, gif, video):
-    """Create share-ready images & gifs for your Devpost projects."""
+    """Create share-ready images & gifs & videos for your Devpost projects"""
     # DATA
     p = slug
     #p = 'infraudio-nuc8df'
@@ -95,7 +96,7 @@ def escobar(slug, gif, video):
     # OH SNAP, IT'S THE GIF CONDITION!
     if (gif is True or video is True):
         print "Generating frames"
-        img.save(p+"1.gif", "GIF")
+        img.save("1.png", "PNG")
 
         # LOGO FRAME
         img = Image.open("img/base2.jpg")
@@ -119,8 +120,20 @@ def escobar(slug, gif, video):
         ty = 20 + logo.size[1] + 140
         draw.text((tx, ty), title, fill=c1, font=ft)
 
-        img.save(p+"0.gif", "GIF")
-        # you still need to run `gifsicle --delay=200 --loop *.gif > anim.gif` once the python script finishes up.
+        img.save("0.png", "PNG")
+        FPS = .5
+        clip = ImageSequenceClip(["0.png", "1.png"], fps=FPS)
+
+        # write output gif / video
+        if (video is True):
+            clip.write_videofile(p+".mp4", fps=FPS)
+
+        if (gif is True):
+            clip.write_gif(p+".gif",fps=FPS)
+
+        # let's clean up after ourselves, no?
+        os.remove("0.png")
+        os.remove("1.png")
 
     else:
         # if GIF is false, just save the original slide as a PNG
