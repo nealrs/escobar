@@ -1,0 +1,12 @@
+{
+  "name": "Escobar",
+  "version": "1.0.0",
+  "description": "Like Buffer's Pablo, but for Devpost projects, and automated",
+  "main": "index.js",
+  "author": "Neal Shyam",
+  "license": "ISC",
+  "dependencies": {
+    "handlebars": "^4.0.3",
+    "request": "latest"
+  }
+}
