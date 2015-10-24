@@ -93,7 +93,7 @@ def escobar(slug, gif, video):
         draw.text((20, y_text), line, font=f2, fill=c1)
         y_text += tagh
 
-    # OH SNAP, IT'S THE GIF CONDITION!
+    # OH SNAP, LET'S GET ANIMTED!
     if (gif is True or video is True):
         print "Generating frames"
         img.save("1.png", "PNG")
