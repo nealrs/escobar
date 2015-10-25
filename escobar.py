@@ -49,7 +49,7 @@ def escobar(slug, gif, video):
     c1 = "white"
 
     #  MAIN FRAME
-    img = Image.open("img/base2.jpg")
+    img = Image.open("img/base.jpg")
     banner = Image.open("img/banner.png")
     draw = ImageDraw.Draw(img)
     W, H = img.size
@@ -99,10 +99,10 @@ def escobar(slug, gif, video):
         img.save("1.png", "PNG")
 
         # LOGO FRAME
-        img = Image.open("img/base2.jpg")
+        img = Image.open("img/base.jpg")
         draw = ImageDraw.Draw(img)
-        logo = Image.open("img/logo2.png")
-        heart = Image.open("img/heart2.png")
+        logo = Image.open("img/logo.png")
+        heart = Image.open("img/heart.png")
         W, H = img.size
 
         # add logo & heart
